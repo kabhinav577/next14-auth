@@ -1,3 +1,5 @@
+'use client';
+
 import { CardWrapper } from './card-wrapper';
 
 export const LoginForm = () => {
