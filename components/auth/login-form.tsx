@@ -2,9 +2,10 @@
 
 import * as z from 'zod';
 import { useState, useTransition } from 'react';
+import { useForm } from 'react-hook-form';
+import { useSearchParams } from 'next/navigation';
 import { LoginSchema } from '@/schemas';
 import { CardWrapper } from './card-wrapper';
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Form,
@@ -21,6 +22,11 @@ import { FormSuccess } from '../form-success';
 import { login } from '@/actions/login';
 
 export const LoginForm = () => {
+  const searchParams = useSearchParams();
+  const urlError =
+    searchParams.get('error') === 'OAuthAccountNotLinked'
+      ? 'Emaily is already linked with another account'
+      : '';
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>();
   const [success, setSuccess] = useState<string | undefined>();
@@ -39,10 +45,12 @@ export const LoginForm = () => {
 
     startTransition(() => {
       login(values).then((data) => {
-        if (data.success) {
-          setSuccess(data.success);
-        } else if (data.error) {
-          setError(data.error);
+        // TODO :: add when we add 2FA
+        // if (data.success) {
+        //   setSuccess(data.success);
+        // }
+        if (data?.error) {
+          setError(data?.error);
         }
       });
     });
@@ -97,7 +105,7 @@ export const LoginForm = () => {
             />
           </div>
 
-          <FormError message={error} />
+          <FormError message={error || urlError} />
           <FormSuccess message={success} />
 
           <Button disabled={isPending} type="submit" className="w-full">
