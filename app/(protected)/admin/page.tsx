@@ -1,5 +1,6 @@
 'use client';
 
+import { admin } from '@/actions/admin';
 import { RoleGate } from '@/components/auth/role-gate';
 import { FormSuccess } from '@/components/form-success';
 import { Button } from '@/components/ui/button';
@@ -14,6 +15,18 @@ const AdminPage = () => {
         toast.success('Allowed API Routes!');
       } else {
         toast.error('Forbidden API Routes!');
+      }
+    });
+  };
+
+  const onServerActionClick = () => {
+    admin().then((data) => {
+      if (data.success) {
+        toast.success(data.success);
+      }
+
+      if (data.error) {
+        toast.error(data.error);
       }
     });
   };
@@ -33,7 +46,7 @@ const AdminPage = () => {
 
         <div className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-md">
           <p className="text-sm font-medium">Admin-Only Server Actions</p>
-          <Button>Click to test!</Button>
+          <Button onClick={onServerActionClick}>Click to test!</Button>
         </div>
       </CardContent>
     </Card>
